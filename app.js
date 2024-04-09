@@ -1,33 +1,36 @@
 const express = require("express");
 const app = express();
-const logger = require("./logger");
-const authorize = require("./authorize");
-const morgan = require("morgan");
+let { people } = require("./data");
 
-// req => middleware => res
-// use() - apply to more/all
-// route - apply to specific route only
+// static assets
+app.use(express.static("./methods-public"));
+//parse form data
+app.use(express.urlencoded({ extended: false }));
+// parse json
+app.use(express.json());
 
-// middleware options = our own middleware / express / third party
-
-// if multiple middlewares, place them in array
-// app.use(express.static('./public')) - sample express middleware
-// app.use([authorize, logger]); - sample own middleware
-app.use(morgan("tiny")); // - sample third party middleware
-
-app.get("/", (req, res) => {
-  res.send("Home");
+app.get("/api/people", (req, res) => {
+  res.status(200).json({ sucess: true, data: people });
 });
 
-app.get("/about", (req, res) => {
-  res.send("About");
+// OPTION 1: regular
+app.post("/login", (req, res) => {
+  const { name } = req.body;
+  if (name) {
+    return res.status(200).send(`Welcome ${name}`);
+  }
+  res.status(401).send("Unauthorized");
 });
 
-// we can also invoke the multiple middleware only on specified route [authorize, logger]
-app.get("/items", [authorize, logger], (req, res) => {
-  // accessed the re.user because of the middleware authorize
-  console.log(req.user);
-  res.send("Items");
+//OPTION 2: using JavaScript
+app.post("/api/people", (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    res
+      .status(400)
+      .json({ success: false, msg: "PLease provide a name value" });
+  }
+  res.status(201).json({ success: true, person: name });
 });
 
 app.listen(5000, () => {
