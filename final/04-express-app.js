@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const app = express();
 
-// will make all resources from publice available
+// will make all resources from public available
 // setup static and middleware(app.use)
 app.use(express.static("./public"));
 

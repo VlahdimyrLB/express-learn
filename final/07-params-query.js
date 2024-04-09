@@ -37,7 +37,7 @@ app.get("/api/products/:productId/reviews/:reviewId", (req, res) => {
   res.send("hello world");
 });
 
-// QUERY STRING - query?
+// QUERY STRING - ?
 // you can add ampersand for multilple query strings ex. query?name=john&id=1
 app.get("/api/v1/query", (req, res) => {
   // search functionality
